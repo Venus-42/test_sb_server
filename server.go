@@ -1,16 +1,16 @@
-package main
+package mian
 
-import (
-	"fmt"
-	"log"
-	"net/http"
-)
-
-func myFunc(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(w, "Hello, world!")
-}
+import "github.com/gin-gonic/gin"
 
 func main() {
-	http.HandleFunc("/hello", myFunc)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r := gin.Default()
+	r.GET("/ping", func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+	err := r.Run()
+	if err != nil {
+		panic(err)
+	}
 }

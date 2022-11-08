@@ -3,14 +3,36 @@ package main
 import (
 	"log"
 	"net"
+	"time"
 )
 
 func main() {
-	// 尝试连接百度服务器
-	conn, err := net.Dial("tcp", "www.baidu.com:80")
+	// listen on 8080 port
+	listen, err := net.Listen("tcp", ":8080")
 	if err != nil {
-		panic(err)
+		log.Fatal("service failed to start : ", err)
+
 	}
-	defer conn.Close()
-	log.Println("Connect success!")
+	defer listen.Close()
+	log.Println("service started successfully")
+	// block waiting for user to connect
+	accept, err := listen.Accept()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// set timeout
+	err = accept.SetDeadline(time.Now().Add(time.Second))
+	if err != nil {
+		log.Fatal(err)
+	}
+	// set read timeout
+	err = accept.SetReadDeadline(time.Now().Add(time.Second))
+	if err != nil {
+		log.Fatal(err)
+	}
+	// set write timeout
+	err = accept.SetWriteDeadline(time.Now().Add(time.Second))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
